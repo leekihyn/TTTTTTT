@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+	<meta charset="UTF-8">
+    <title>Testing websocket</title>
+</head>
+<body>
+    <fieldset> 
+        <textarea id="messageWindow" rows="10" cols="50" readonly="true"></textarea>
+        <br/>
+        <input id="inputMessage" type="text"/>
+        <input type="submit" value="send" id ="submit"onclick="send()" />
+        <div id = "here"></div>
+    </fieldset>
+</body>  
+    <script type="text/javascript">
+var textarea = document.getElementById("messageWindow");
+var webSocket = new WebSocket('ws://localhost/broadcasting'); 
+var inputMessage = document.getElementById('inputMessage'); 
+webSocket.onerror = function(event) { 
+onError(event)
+};
+webSocket.onopen = function(event) {
+onOpen(event)
+};
+webSocket.onmessage = function(event) {
+onMessage(event)
+};
+function onMessage(event) {
+$("#here").append("<input id='gg' value='"+event.data+"' disabled/>")
+} 
+function onOpen(event) {
+textarea.value += "연결 성공\n";
+} 
+function onError(event) {  
+alert(event.data);
+}
+function send() {
+    textarea.value += "나 : " + inputMessage.value + "\n";
+    webSocket.send(inputMessage.value);
+    inputMessage.value = "";
+}
+$(document).ready(function(){
+	$("#inputMessage").keydown(function(e) {
+		var keyCode = e.keyCode || e.which;
+		if(keyCode == 13) {
+			$("#submit").click();
+			$("#messageWindow").scrollTop($("#messageWindow")[0].scrollHeight);
+			return false;
+		} else {
+			return true;
+		}
+	});
+//onload end 
+});
+  </script>
+</html>
+
+
+
+
+
